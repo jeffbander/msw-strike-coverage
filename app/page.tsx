@@ -28,7 +28,13 @@ export default function HomePage() {
             Sign In (Returning Fellow)
           </Link>
 
-          <div className="border-t pt-4 mt-6">
+          <div className="border-t pt-4 mt-6 space-y-2">
+            <Link
+              href="/test-mode"
+              className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors text-sm text-center block"
+            >
+              🧪 Test Mode (Skip Email)
+            </Link>
             <Link
               href="/admin"
               className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors text-sm text-center block"
