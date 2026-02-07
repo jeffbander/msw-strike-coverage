@@ -21,9 +21,8 @@
 3. **Set Environment Variables in Vercel:**
    ```
    ADMIN_PASSWORD=your_secure_password
-   NEXT_PUBLIC_CONVEX_URL=your_convex_url
-   CONVEX_DEPLOYMENT=your_convex_deployment
-   RESEND_API_KEY=your_resend_key
+   SENDGRID_API_KEY=your_sendgrid_api_key
+   SENDGRID_FROM_EMAIL=noreply@yourdomain.com
    ```
 
 ## 🏥 Features Built
@@ -40,10 +39,33 @@
 ## 🔧 Tech Stack
 
 - **Framework:** Next.js 14 (App Router)
-- **Styling:** Tailwind CSS
+- **Styling:** Tailwind CSS  
+- **Email:** SendGrid for magic link authentication
 - **Database:** Ready for Convex (currently mock data)
-- **Auth:** Magic Link (ready for integration)
+- **Auth:** Magic Link via SendGrid emails
 - **Deployment:** Vercel
+
+## 📧 SendGrid Setup
+
+1. **Create SendGrid Account:**
+   - Go to [sendgrid.com](https://sendgrid.com)
+   - Sign up for free account (100 emails/day free)
+
+2. **Get API Key:**
+   - Go to Settings → API Keys
+   - Create new API key with "Full Access"
+   - Copy the key (starts with `SG.`)
+
+3. **Verify Sender Identity:**
+   - Go to Settings → Sender Authentication
+   - Verify your domain OR single sender email
+   - Use verified email as `SENDGRID_FROM_EMAIL`
+
+4. **Add to Vercel:**
+   ```
+   SENDGRID_API_KEY=SG.your_api_key_here
+   SENDGRID_FROM_EMAIL=noreply@yourdomain.com
+   ```
 
 ## 📱 User Flows
 

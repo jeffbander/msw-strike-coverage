@@ -32,15 +32,30 @@ export default function RegisterPage() {
     setMessage('')
 
     try {
-      // TODO: Integrate with Convex or your backend
-      console.log('Registration data:', formData)
-      
-      // Simulate magic link send
-      setMessage(`Magic link sent to ${formData.email}! Check your email and click the link to sign in.`)
-      
-      // Reset form
-      setFormData({ name: '', email: '', cell: '', fellowship: '' })
+      // Call API to send magic link
+      const response = await fetch('/api/send-magic-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          name: formData.name,
+          type: 'registration'
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setMessage(`Magic link sent to ${formData.email}! Check your email and click the link to complete registration.`)
+        // Reset form
+        setFormData({ name: '', email: '', cell: '', fellowship: '' })
+      } else {
+        setMessage(result.error || 'Failed to send magic link. Please try again.')
+      }
     } catch (error) {
+      console.error('Registration error:', error)
       setMessage('Registration failed. Please try again.')
     } finally {
       setLoading(false)

@@ -14,13 +14,28 @@ export default function SignInPage() {
     setMessage('')
 
     try {
-      // TODO: Integrate with Convex/backend to send magic link
-      console.log('Magic link request for:', email)
-      
-      // Simulate magic link send
-      setMessage(`Magic link sent to ${email}! Check your email and click the link to sign in.`)
-      setEmail('')
+      // Call API to send magic link
+      const response = await fetch('/api/send-magic-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          type: 'signin'
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setMessage(`Magic link sent to ${email}! Check your email and click the link to sign in.`)
+        setEmail('')
+      } else {
+        setMessage(result.error || 'Failed to send magic link. Please try again.')
+      }
     } catch (error) {
+      console.error('Sign in error:', error)
       setMessage('Failed to send magic link. Please try again.')
     } finally {
       setLoading(false)
