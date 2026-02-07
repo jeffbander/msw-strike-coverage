@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // Mock data
 const mockAllShifts = [
@@ -73,12 +73,12 @@ export default function AdminPage() {
   }
 
   // Check for existing auth on load
-  useState(() => {
+  useEffect(() => {
     const authStatus = localStorage.getItem('adminAuth')
     if (authStatus === 'true') {
       setIsAuthenticated(true)
     }
-  })
+  }, [])
 
   const getLocationColor = (location: string) => {
     switch (location) {
