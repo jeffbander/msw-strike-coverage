@@ -20,7 +20,7 @@ export default function VerifyPage() {
 
     // Decode and verify token (basic implementation)
     try {
-      const decoded = Buffer.from(token, 'base64url').toString()
+      const decoded = Buffer.from(token, 'base64').toString('utf8')
       const [email, timestamp] = decoded.split(':')
       const tokenAge = Date.now() - parseInt(timestamp)
       

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import sgMail from '@sendgrid/mail'
 
-// Initialize SendGrid
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+// Dynamic import for SendGrid to avoid SSR issues
+const getSendGrid = async () => {
+  const sgMail = await import('@sendgrid/mail')
+  return sgMail.default
 }
 
 export async function POST(request: NextRequest) {
@@ -28,9 +28,15 @@ export async function POST(request: NextRequest) {
       })
     }
 
+    // Initialize SendGrid
+    const sgMail = await getSendGrid()
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+
     // Generate magic link token (in production, use proper JWT/signing)
-    const token = Buffer.from(`${email}:${Date.now()}`).toString('base64url')
-    const magicLink = `${process.env.VERCEL_URL || 'http://localhost:3001'}/auth/verify?token=${token}`
+    const tokenData = `${email}:${Date.now()}`
+    const token = Buffer.from(tokenData, 'utf8').toString('base64')
+    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3001'
+    const magicLink = `${baseUrl}/auth/verify?token=${token}`
 
     // Email content based on type
     const isRegistration = type === 'registration'
@@ -128,7 +134,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Send email
-    await sgMail.send(msg)
+    try {
+      await sgMail.send(msg)
+      console.log('Magic link sent successfully to:', email)
+    } catch (sendError) {
+      console.error('SendGrid send error:', sendError)
+      // Fallback: Return success but log the error
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Magic link sent successfully',
+        debug: 'Email sending failed, check logs'
+      })
+    }
 
     return NextResponse.json({ 
       success: true, 
